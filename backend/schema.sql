@@ -1,0 +1,17 @@
+
+CREATE DATABASE IF NOT EXISTS neysatree_db;
+
+USE neysatree_db;
+
+CREATE TABLE IF NOT EXISTS menus (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(150) NOT NULL,
+    parent_id BIGINT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_menus_parent
+        FOREIGN KEY (parent_id)
+        REFERENCES menus(id)
+        ON DELETE CASCADE
+);

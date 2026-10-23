@@ -92,6 +92,42 @@ func databaseHealthHandler(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+
+func getMenuByIDHandler(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+	if err != nil || id <= 0 {
+		writeError(w, http.StatusBadRequest, "ID menu tidak valid")
+		return
+	}
+
+	var menu Menu
+	var parentID sql.NullInt64
+
+	err = db.QueryRow(
+		"SELECT id, title, parent_id FROM menus WHERE id = ?",
+		id,
+	).Scan(&menu.ID, &menu.Title, &parentID)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			writeError(w, http.StatusNotFound, "Menu tidak ditemukan")
+			return
+		}
+
+		writeError(w, http.StatusInternalServerError, "Gagal mengambil data menu")
+		return
+	}
+
+	if parentID.Valid {
+		value := parentID.Int64
+		menu.ParentID = &value
+	}
+
+	menu.Children = []*Menu{}
+
+	writeJSON(w, http.StatusOK, menu)
+}
+
 func getMenusHandler(w http.ResponseWriter, r *http.Request) {
 	rows, err := db.Query(
 		"SELECT id, title, parent_id FROM menus ORDER BY id",
@@ -344,6 +380,7 @@ func main() {
 	mux.HandleFunc("GET /api/health", healthHandler)
 	mux.HandleFunc("GET /api/health/db", databaseHealthHandler)
 	mux.HandleFunc("GET /api/menus", getMenusHandler)
+	mux.HandleFunc("GET /api/menus/{id}", getMenuByIDHandler)
 	mux.HandleFunc("POST /api/menus", createMenuHandler)
 	mux.HandleFunc("PUT /api/menus/{id}", updateMenuHandler)
 	mux.HandleFunc("DELETE /api/menus/{id}", deleteMenuHandler)

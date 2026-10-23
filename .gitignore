@@ -1,0 +1,12 @@
+# Environment variables and secrets
+.env
+**/.env
+
+# Frontend build files
+node_modules/
+dist/
+dist-ssr/
+
+# Go build output
+/backend/*.exe
+/backend/*.test

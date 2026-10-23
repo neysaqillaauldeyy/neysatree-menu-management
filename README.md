@@ -109,6 +109,7 @@ Open the local URL displayed by Vite, usually:
 | GET    | `/api/health`     | Check backend health                   |
 | GET    | `/api/health/db`  | Check database connectivity            |
 | GET    | `/api/menus`      | Retrieve the menu hierarchy            |
+| GET    | `/api/menus/{id}` | Retrieve a menu by ID                  |
 | POST   | `/api/menus`      | Create a menu item                     |
 | PUT    | `/api/menus/{id}` | Update a menu title                    |
 | DELETE | `/api/menus/{id}` | Delete a menu item and its descendants |

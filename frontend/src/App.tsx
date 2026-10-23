@@ -105,6 +105,14 @@ function App() {
   }
 
   async function removeMenu(id: number, title: string) {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${title}"? This may also delete all its child menus.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     try {
       setMessage("");
 
@@ -115,7 +123,7 @@ function App() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || "Failed to delete menu.");
+        throw new Error(result.error || "Failed to delete menu.");
       }
 
       setMenus((current) => deleteMenu(current, id));
